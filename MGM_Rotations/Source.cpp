@@ -33,6 +33,43 @@ struct Stands {
 	int endtime = 0;
 };
 
+bool isNumber(const string& str) {
+
+	for (char const& c : str) {
+		if (isdigit(c) == 0)
+			return false;
+	}
+	return true;
+}
+
+
+int InputingNumber(string Question) {
+	bool correctinput = false;
+	int value = 0;
+	char str[256];
+
+
+	while (correctinput == false) {
+		cout << Question; 
+		cin >> str;
+		if (isNumber(str) == true) {
+			value = atoi(str);
+			correctinput = true;
+		}
+		else {
+			cout << "Please enter only numbers for this input that are greater than 0!" << endl;
+			correctinput = false;
+		}
+
+
+	}
+
+
+
+	return value;
+}
+
+
 int SearchChart(int column, string stand, int count) { // searches the given column of the chart for the given name of the stand and returns the y value of it
 
 	for (int y = 0; y < count; y++) {
@@ -48,8 +85,8 @@ int SearchChart(int column, string stand, int count) { // searches the given col
 void StandInput(Stands A[], int count){ 
 
 	for (int i = 0; i < count; i++) {
-		//cout << "Enter the name of the stand:";
-		myfile >> A[i].name;
+		cout << "Enter the name of the stand:";
+		cin >> A[i].name;
 	}
 
 	return;
@@ -67,38 +104,50 @@ int findtime(string input) { //return index of time input
 
 
 int shiftInput(int start[], int end[], Lifeguard L[]) {
-	int shifts = 0;
+	string shiftsinput;
+	int shifts;
 	int LGcount_input = 0;
 	int LGcount = 0;
+	string LGinput;
 	string timeinput;
-	cout << "Enter the amount of shifts you are going to Input:";
-	cin >> shifts;
+
+
+	shifts = InputingNumber("Enter the amount of shifts you are going to Input:");
 
 	if (shifts > 0) {
 		for (int i = 0; i < shifts; i++) {
 			while (true) {
 				cout << "Shift start time:";
 				cin >> timeinput;
-				start[i] = findtime(timeinput) - starttime;
+				//start[i] = findtime(timeinput) - starttime;
+				start[i] = findtime(timeinput);
 				if (start[i] == -1) {
 					cout << "Please enter a valid start time" << endl;
 				}
-				else
+				else {
+					start[i] -= starttime;
 					break;
+				}
 			}
 			while (true) {
 				cout << "Shift end time";
 				cin >> timeinput;
-				end[i] = findtime(timeinput) - starttime;
+				//end[i] = findtime(timeinput) - starttime;
+				end[i] = findtime(timeinput);
 				if (end[i] == -1)
 					cout << "Please enter a valid end time" << endl;
-				else
+				else {
+					end[i] -= starttime;
 					break;
-
+				}
 			}
-			cout << "Amount of lifeguards per shift:";
-			cin >> LGcount_input;
 
+
+			LGcount_input = InputingNumber("Amount of lifeguards per shift:");
+			
+
+
+			
 			LGcount += LGcount_input;
 			LGcount_pershift[i] = LGcount_input;
 
@@ -123,36 +172,43 @@ void standShiftInput(int start[], int end[]) {
 
 	int shift = 0;
 	string timeinput;
-	cout << "Enter the amount of stand shifts you are going to Input:";
-	cin >> shift;
 
 
-	if (shift > 0) {
+	shift = InputingNumber("Enter the amount of stand shifts you are going to Input:");
+
+
+	
 
 		for (int i = 0; i < shift; i++) {
 			while (true) {
 				cout << "Stand Shift start time";
 				cin >> timeinput;
-				start[i] = findtime(timeinput) - starttime;
+				//start[i] = findtime(timeinput) - starttime;
+				start[i] = findtime(timeinput);
 				if (start[i] == -1) {
 					cout << "Please enter a valid start time" << endl;
 				}
-				else
+				else {
+					start[i] -= starttime;
 					break;
+				}
 			}
 			while (true) {
 				cout << "Stand Shift end time:";
 				cin >> timeinput;
-				end[i] = findtime(timeinput) - starttime;
+				//end[i] = findtime(timeinput) - starttime;
+				end[i] = findtime(timeinput);
 				if (end[i] == -1) {
 					cout << "Please enter a valid start time" << endl;
 				}
-				else
+				else {
+					end[i] -= starttime;
 					break;
+				}
 			}
 
 		}
-	}
+	
 
 
 	return;
@@ -180,13 +236,12 @@ void LifeguardShifts(Lifeguard L[], int count, int start[], int end[]) {
 void StandShifts(Stands S[], int count, int start[], int end[]) {
 
 	int shift = -1;
-	
 
 	for (int i = 0; i < count; i++) {
 		cout << "Input the shift number for the stand " << S[i].name << ":";
 		
 		cin >> shift;
-
+		
 
 		S[i].startime = start[shift - 1];
 		S[i].endtime = end[shift - 1];
@@ -331,6 +386,7 @@ int main() {
 	int poolHours = 0;
 	int LifeguardCount = 0;
 	int standCount = 0;
+	int standshiftCount = 0;
 	int intervals = 0;
 	int random_num = 0;
 	bool input = false;
@@ -386,9 +442,8 @@ int main() {
 	intervals = poolHours * 2;
 
 
-	//cout << "Enter the amount of stands:";
-	myfile >> standCount;
-
+	cout << "Enter the amount of stands:";
+	cin >> standCount;
 
 
 	for (int i = 0; i < 100; i++) {
