@@ -130,7 +130,7 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 				}
 			}
 			while (true) {
-				cout << "Shift end time";
+				cout << "Shift end time:";
 				cin >> timeinput;
 				//end[i] = findtime(timeinput) - starttime;
 				end[i] = findtime(timeinput);
@@ -181,7 +181,7 @@ void standShiftInput(int start[], int end[]) {
 
 		for (int i = 0; i < shift; i++) {
 			while (true) {
-				cout << "Stand Shift start time";
+				cout << "Stand Shift start time:";
 				cin >> timeinput;
 				//start[i] = findtime(timeinput) - starttime;
 				start[i] = findtime(timeinput);
@@ -260,11 +260,11 @@ void Print(int LG_count, int time, Lifeguard L[]) {
 	for (int y = 0; y < LG_count; y++) {
 		for(int x = 0; x < time; x++){
 			if (chart[x][y] != "NULL")
-				outputfile <<  setw(4) << left << chart[x][y];
+				cout <<  setw(4) << left << chart[x][y];
 			else
-				outputfile << setw(4) << "-";
+				cout << setw(4) << "-";
 		}
-		outputfile << "StandCount:" << L[y].standcounter << endl;
+		cout << "StandCount:" << L[y].standcounter << endl;
 	}
 
 
@@ -379,8 +379,8 @@ void Disperse(Lifeguard L[], int count, int intervals) {
 
 int main() {
 
-	myfile.open("Stands.txt");
-	outputfile.open("rotation.txt");
+	//myfile.open("Stands.txt");
+	//outputfile.open("rotation.txt");
 
 	srand(time(NULL));
 	int poolHours = 0;
@@ -442,8 +442,7 @@ int main() {
 	intervals = poolHours * 2;
 
 
-	cout << "Enter the amount of stands:";
-	cin >> standCount;
+	standCount = InputingNumber("Enter the amount of stands:");
 
 
 	for (int i = 0; i < 100; i++) {
@@ -549,19 +548,19 @@ int main() {
 
 
 
-	Print(LifeguardCount, intervals, Guardarray);
-	outputfile.close();
+	//Print(LifeguardCount, intervals, Guardarray);
+	//outputfile.close();
 
-	outputfile.open("rotation.txt");
+	//outputfile.open("rotation.txt");
 	Disperse(Guardarray, LifeguardCount, intervals);
 
 
 	
 	
 	Print(LifeguardCount, intervals, Guardarray);
-	outputfile.close();
+	//outputfile.close();
 
 
-
+	while (true);
 	return 0;
 }
