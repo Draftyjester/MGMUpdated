@@ -246,12 +246,12 @@ void Disperse(Lifeguard L[], int count, int intervals) {
 		end = -1;
 
 		for (int i = 0; start == -1; i++) { //find first clocked in Lifeguard and set that as the start
-			if (L[i].starttime <= current_interval && L[i].endtime >= current_interval && L[i].disperse_viable == true)
+			if (L[i].starttime <= current_interval && L[i].endtime > current_interval && L[i].disperse_viable == true)
 				start = i;
 		}
 
 		for (int i = 0; i < count; i++) { //find last clocking in Lifeguard and set that as the end
-			if (L[i].starttime <= current_interval && L[i].endtime >= current_interval && L[i].disperse_viable == true)
+			if (L[i].starttime <= current_interval && L[i].endtime > current_interval && L[i].disperse_viable == true)
 				end = i;
 		}
 
@@ -436,7 +436,7 @@ int main() {
 			
 			while (Lifeguard_selected == false) { //choose a random number and check if that random Lifeguard is down and is clocked in
 				random_num = rand() % LifeguardCount;
-				if (Guardarray[random_num].down == true && Guardarray[random_num].starttime <= x && Guardarray[random_num].endtime >= x)
+				if (Guardarray[random_num].down == true && Guardarray[random_num].starttime <= x && Guardarray[random_num].endtime > x)
 					Lifeguard_selected = true;
 
 				
@@ -446,7 +446,7 @@ int main() {
 
 			stand_selected = false;
 			while (stand_selected == false) {
-				if (StandArray[remainingStands - 1].startime <= x && StandArray[remainingStands - 1].endtime >= x)
+				if (StandArray[remainingStands - 1].startime <= x && StandArray[remainingStands - 1].endtime > x)
 					stand_selected = true;
 				else
 					remainingStands--;
