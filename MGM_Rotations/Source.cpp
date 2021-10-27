@@ -33,7 +33,7 @@ struct Stands {
 	int endtime = 0;
 };
 
-bool isNumber(const string& str) {
+bool isNumber(const string& str) { //determines if the given string is only numbers or if it has characters in it for input checking
 
 	for (char const& c : str) {
 		if (isdigit(c) == 0)
@@ -43,7 +43,7 @@ bool isNumber(const string& str) {
 }
 
 
-int InputingNumber(string Question) {
+int InputingNumber(string Question) {// function used when inputting a number into a variable, uses given string for question
 	bool correctinput = false;
 	int value = 0;
 	char str[256];
@@ -104,7 +104,6 @@ int findtime(string input) { //return index of time input
 
 
 int shiftInput(int start[], int end[], Lifeguard L[]) {
-	string shiftsinput;
 	int shifts;
 	int LGcount_input = 0;
 	int LGcount = 0;
@@ -119,7 +118,6 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 			while (true) {
 				cout << "Shift start time:";
 				cin >> timeinput;
-				//start[i] = findtime(timeinput) - starttime;
 				start[i] = findtime(timeinput);
 				if (start[i] == -1) {
 					cout << "Please enter a valid start time" << endl;
@@ -132,7 +130,6 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 			while (true) {
 				cout << "Shift end time:";
 				cin >> timeinput;
-				//end[i] = findtime(timeinput) - starttime;
 				end[i] = findtime(timeinput);
 				if (end[i] == -1)
 					cout << "Please enter a valid end time" << endl;
@@ -183,7 +180,6 @@ void standShiftInput(int start[], int end[]) {
 			while (true) {
 				cout << "Stand Shift start time:";
 				cin >> timeinput;
-				//start[i] = findtime(timeinput) - starttime;
 				start[i] = findtime(timeinput);
 				if (start[i] == -1) {
 					cout << "Please enter a valid start time" << endl;
@@ -196,7 +192,6 @@ void standShiftInput(int start[], int end[]) {
 			while (true) {
 				cout << "Stand Shift end time:";
 				cin >> timeinput;
-				//end[i] = findtime(timeinput) - starttime;
 				end[i] = findtime(timeinput);
 				if (end[i] == -1) {
 					cout << "Please enter a valid start time" << endl;
@@ -213,25 +208,6 @@ void standShiftInput(int start[], int end[]) {
 
 	return;
 }
-
-
-void LifeguardShifts(Lifeguard L[], int count, int start[], int end[]) {
-
-	int shift;
-
-	for (int i = 0; i < count; i++) {
-		//cout << "Input the shift number for Lifeguard " << i + 1 << ":";
-		cin >> shift;
-
-
-		L[i].starttime = start[shift - 1];
-		L[i].endtime = end[shift - 1];
-	}
-
-
-	return;
-}
-
 
 void StandShifts(Stands S[], int count, int start[], int end[]) {
 
@@ -279,14 +255,11 @@ bool checkStandCount(Lifeguard L[], int count) {
 			return false;
 	}
 
-
-
-	
 	return true;
 }
 
 
-void Disperse(Lifeguard L[], int count, int intervals) {
+void Disperse(Lifeguard L[], int count, int intervals) { //function that evenely distributes stands among lifegaurds
 	int noswap_counter = 0;
 	int current_interval = 0;
 	int minindex = 0;
@@ -382,14 +355,11 @@ int main() {
 	//myfile.open("Stands.txt");
 	//outputfile.open("rotation.txt");
 
-	srand(time(NULL));
-	int poolHours = 0;
+	srand(time(NULL));  //seed for random number
 	int LifeguardCount = 0;
 	int standCount = 0;
-	int standshiftCount = 0;
 	int intervals = 0;
 	int random_num = 0;
-	bool input = false;
 	Lifeguard Guardarray[100];
 	Stands StandArray[100];
 	int shiftstart[50];
@@ -400,27 +370,6 @@ int main() {
 	bool valid_inputed = false;
 
 
-	
-
-
-
-
-	
-	/*while (input == false) {
-		cout << "Enter the amount of Lifeguards:";
-		myfile >> LifeguardCount;
-		cout << "Enter the amount of stands:";
-		myfile >> standCount;
-
-		if (LifeguardCount < standCount) {
-			//cout << "current values are impossible there must be more Lifeguards than stands. Please try again" << endl;
-		}
-		else {
-			input = true;
-			//cout << "Thank you! Calculating Rotation..." << endl;
-		}
-	}
-	*/
 
 	while (valid_inputed == false) {
 		cout << "Enter the opening time of the pool:";
@@ -438,9 +387,9 @@ int main() {
 			cout << "Please enter a valid starting and closing time that follows the format and make sure the closing time is greater than the opening time" << endl;
 	}
 
-	poolHours = (endtime - starttime) / 2;
-	intervals = poolHours * 2;
+	
 
+	intervals = endtime - starttime;
 
 	standCount = InputingNumber("Enter the amount of stands:");
 
@@ -462,8 +411,6 @@ int main() {
 	
 	
 	LifeguardCount = shiftInput(shiftstart, shiftend, Guardarray);
-
-	//LifeguardShifts(Guardarray, LifeguardCount, shiftstart, shiftend);
 	
 	standShiftInput(standstart, standend);
 
@@ -548,10 +495,6 @@ int main() {
 
 
 
-	//Print(LifeguardCount, intervals, Guardarray);
-	//outputfile.close();
-
-	//outputfile.open("rotation.txt");
 	Disperse(Guardarray, LifeguardCount, intervals);
 
 
@@ -561,6 +504,5 @@ int main() {
 	//outputfile.close();
 
 
-	while (true);
 	return 0;
 }
