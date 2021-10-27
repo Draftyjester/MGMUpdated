@@ -258,6 +258,30 @@ bool checkStandCount(Lifeguard L[], int count) {
 	return true;
 }
 
+void Breaks(Lifeguard L[], int count, int intervals) {
+	int Consecutive_down_counter = 0;
+	for (int y = 0; y < count; y++) {
+		for (int x = 0; x < intervals; x++) {
+			if (chart[x][y] == "NULL" && L[x].starttime <= x && L[x].endtime > x) {
+				Consecutive_down_counter++;
+			}
+			else {
+				Consecutive_down_counter = 0
+			}
+
+			if(Consecutive_down_counter == 2){
+				chart[x][y] = "B";
+				chart[x - 1][y] = "B";
+				break;
+			}
+
+		}
+
+	}
+
+	return;
+}
+
 
 void Disperse(Lifeguard L[], int count, int intervals) { //function that evenely distributes stands among lifegaurds
 	int noswap_counter = 0;
