@@ -24,7 +24,11 @@ struct Lifeguard {
 	string name = "No_name";
 	int starttime = 0;
 	int endtime = 0;
+	int break_starttime = 0;
+	int break_endtime = 0;
 	bool disperse_viable = true;
+	bool BreakViable = true;
+	bool hasBreak = false;
 };
 
 struct Stands {
@@ -109,7 +113,8 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 	int LGcount = 0;
 	string LGinput;
 	string timeinput;
-
+	int breakstarttime = 0;
+	int breakendtime = 0;
 
 	shifts = InputingNumber("Enter the amount of shifts you are going to Input:");
 
@@ -138,6 +143,33 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 					break;
 				}
 			}
+			
+			if (end[i] - start[i] >= 14) {
+				while (true) {
+					cout << "Break Interval start time:";
+					cin >> timeinput;
+					breakstarttime = findtime(timeinput);
+					if (breakstarttime == -1) {
+						cout << "Please enter a valid start time" << endl;
+					}
+					else {
+						breakstarttime -= starttime;
+						break;
+					}
+				}
+				while (true) {
+					cout << "Break Interval end time:";
+					cin >> timeinput;
+					breakstarttime = findtime(timeinput);
+					if (breakstarttime == -1) {
+						cout << "Please enter a valid end time" << endl;
+					}
+					else {
+						breakendtime -= starttime;
+						break;
+					}
+				}
+			}
 
 
 			LGcount_input = InputingNumber("Amount of lifeguards per shift:");
@@ -152,8 +184,17 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 			for (int j = LGcount - LGcount_input; j < LGcount; j++) {
 				L[j].starttime = start[i];
 				L[j].endtime = end[i];
-				if (L[j].endtime - L[j].starttime <= 12)
+				if (L[j].endtime - L[j].starttime < 12) {
 					L[j].disperse_viable = false;
+				}
+				if (L[j].endtime - L[j].starttime < 14) {
+					L[j].BreakViable = false;
+				}
+				else {
+					L[j].break_starttime = breakstarttime;
+					L[i].break_endtime = breakendtime;
+				}
+					
 			}
 		}
 
@@ -233,6 +274,11 @@ void StandShifts(Stands S[], int count, int start[], int end[]) {
 
 
 void Print(int LG_count, int time, Lifeguard L[]) {
+	for (int i = 0; i < time; i++) {
+		cout << setw(4) << left << times[starttime + i];
+	}
+	cout << endl;
+
 	for (int y = 0; y < LG_count; y++) {
 		for(int x = 0; x < time; x++){
 			if (chart[x][y] != "NULL")
@@ -259,14 +305,15 @@ bool checkStandCount(Lifeguard L[], int count) {
 }
 
 void Breaks(Lifeguard L[], int count, int intervals) {
+	cout << "Break Function Called" << endl;
 	int Consecutive_down_counter = 0;
 	for (int y = 0; y < count; y++) {
 		for (int x = 0; x < intervals; x++) {
-			if (chart[x][y] == "NULL" && L[x].starttime <= x && L[x].endtime > x) {
+			if (chart[x][y] == "NULL" && L[x].starttime <= x && L[x].endtime > x && L[x].break_starttime <= x && L[x].break_endtime > x) {
 				Consecutive_down_counter++;
 			}
 			else {
-				Consecutive_down_counter = 0
+				Consecutive_down_counter = 0;
 			}
 
 			if(Consecutive_down_counter == 2){
@@ -449,8 +496,8 @@ int main() {
 	bool standsLeft = true;
 	bool stand_selected = false;
 	int remainingStands = 0;
-	
-
+	int attemptCount = 0;
+	bool newGaurdSelected = false;
 
 	for (int x = 0; x < intervals; x++) { //for every column x
 		remainingStands = standCount;
@@ -458,45 +505,57 @@ int main() {
 
 
 			Lifeguard_selected = false;
-			
+			newGaurdSelected = false;
+			attemptCount = 0;
 			while (Lifeguard_selected == false) { //choose a random number and check if that random Lifeguard is down and is clocked in
 				random_num = rand() % LifeguardCount;
+				
 				if (Guardarray[random_num].down == true && Guardarray[random_num].starttime <= x && Guardarray[random_num].endtime > x)
 					Lifeguard_selected = true;
-
-				
-
-			
-			}
-
-			stand_selected = false;
-			while (stand_selected == false) {
-				if (StandArray[remainingStands - 1].startime <= x && StandArray[remainingStands - 1].endtime > x)
-					stand_selected = true;
 				else
-					remainingStands--;
-
-			}
-			
-
-			chart[x][random_num] = StandArray[remainingStands - 1].name; //give that random Lifeguard the current stand
-			Guardarray[random_num].down = false; //that Lifeguard now has a stand so make it not down anymore
-			Guardarray[random_num].standcounter++;
-
-
-
-			if (x != 0) {
-
-				index = SearchChart(x - 1, StandArray[remainingStands - 1].name, LifeguardCount);
-				if (index != -1) {
-					Guardarray[index].down = true;
+					attemptCount++;
 					
+				if (attemptCount > 300) {
+					index = SearchChart(x - 1, StandArray[remainingStands - 1].name, LifeguardCount);
+					chart[x][index] = StandArray[remainingStands - 1].name;
+					newGaurdSelected = false;
+					break;
 				}
 
+				newGaurdSelected = true;
 			}
 
+			if (newGaurdSelected == true) {
 
 
+				stand_selected = false;
+				while (stand_selected == false) {
+					if (StandArray[remainingStands - 1].startime <= x && StandArray[remainingStands - 1].endtime > x)
+						stand_selected = true;
+					else
+						remainingStands--;
+
+				}
+
+
+				chart[x][random_num] = StandArray[remainingStands - 1].name; //give that random Lifeguard the current stand
+				Guardarray[random_num].down = false; //that Lifeguard now has a stand so make it not down anymore
+				Guardarray[random_num].standcounter++;
+
+
+
+				if (x != 0) {
+
+					index = SearchChart(x - 1, StandArray[remainingStands - 1].name, LifeguardCount);
+					if (index != -1) {
+						Guardarray[index].down = true;
+
+					}
+
+				}
+
+
+			}
 			remainingStands--;
 		}
 
@@ -522,11 +581,11 @@ int main() {
 	Disperse(Guardarray, LifeguardCount, intervals);
 
 
-	
+	Breaks(Guardarray, LifeguardCount, intervals);
 	
 	Print(LifeguardCount, intervals, Guardarray);
 	//outputfile.close();
 
-
+	while(true){}
 	return 0;
 }
