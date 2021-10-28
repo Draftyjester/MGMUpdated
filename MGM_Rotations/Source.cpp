@@ -54,7 +54,7 @@ int InputingNumber(string Question) {// function used when inputting a number in
 
 
 	while (correctinput == false) {
-		cout << Question; 
+		cout << Question;
 		cin >> str;
 		if (isNumber(str) == true) {
 			value = atoi(str);
@@ -86,7 +86,7 @@ int SearchChart(int column, string stand, int count) { // searches the given col
 	return -1;
 }
 
-void StandInput(Stands A[], int count){ 
+void StandInput(Stands A[], int count) {
 
 	for (int i = 0; i < count; i++) {
 		cout << "Enter the name of the stand:";
@@ -107,7 +107,7 @@ int findtime(string input) { //return index of time input
 }
 
 
-int shiftInput(int start[], int end[], Lifeguard L[]) {
+int shiftInput(int start, int end, Lifeguard L[]) {
 	int shifts;
 	int LGcount_input = 0;
 	int LGcount = 0;
@@ -123,28 +123,28 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 			while (true) {
 				cout << "Shift start time:";
 				cin >> timeinput;
-				start[i] = findtime(timeinput);
-				if (start[i] == -1) {
+				start = findtime(timeinput);
+				if (start == -1) {
 					cout << "Please enter a valid start time" << endl;
 				}
 				else {
-					start[i] -= starttime;
+					start -= starttime;
 					break;
 				}
 			}
 			while (true) {
 				cout << "Shift end time:";
 				cin >> timeinput;
-				end[i] = findtime(timeinput);
-				if (end[i] == -1)
+				end = findtime(timeinput);
+				if (end == -1)
 					cout << "Please enter a valid end time" << endl;
 				else {
-					end[i] -= starttime;
+					end -= starttime;
 					break;
 				}
 			}
-			
-			if (end[i] - start[i] >= 14) {
+
+			if (end - start >= 14) {
 				while (true) {
 					cout << "Break Interval start time:";
 					cin >> timeinput;
@@ -160,8 +160,8 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 				while (true) {
 					cout << "Break Interval end time:";
 					cin >> timeinput;
-					breakstarttime = findtime(timeinput);
-					if (breakstarttime == -1) {
+					breakendtime = findtime(timeinput);
+					if (breakendtime == -1) {
 						cout << "Please enter a valid end time" << endl;
 					}
 					else {
@@ -173,28 +173,28 @@ int shiftInput(int start[], int end[], Lifeguard L[]) {
 
 
 			LGcount_input = InputingNumber("Amount of lifeguards per shift:");
-			
 
 
-			
+
+
 			LGcount += LGcount_input;
 			LGcount_pershift[i] = LGcount_input;
 
 
 			for (int j = LGcount - LGcount_input; j < LGcount; j++) {
-				L[j].starttime = start[i];
-				L[j].endtime = end[i];
-				if (L[j].endtime - L[j].starttime < 12) {
+				L[j].starttime = start;
+				L[j].endtime = end;
+				if ((L[j].endtime - L[j].starttime) < 12) {
 					L[j].disperse_viable = false;
 				}
-				if (L[j].endtime - L[j].starttime < 14) {
+				if ((L[j].endtime - L[j].starttime) < 14) {
 					L[j].BreakViable = false;
 				}
 				else {
 					L[j].break_starttime = breakstarttime;
-					L[i].break_endtime = breakendtime;
+					L[j].break_endtime = breakendtime;
 				}
-					
+
 			}
 		}
 
@@ -215,37 +215,35 @@ void standShiftInput(int start[], int end[]) {
 	shift = InputingNumber("Enter the amount of stand shifts you are going to Input:");
 
 
-	
 
-		for (int i = 0; i < shift; i++) {
-			while (true) {
-				cout << "Stand Shift start time:";
-				cin >> timeinput;
-				start[i] = findtime(timeinput);
-				if (start[i] == -1) {
-					cout << "Please enter a valid start time" << endl;
-				}
-				else {
-					start[i] -= starttime;
-					break;
-				}
-			}
-			while (true) {
-				cout << "Stand Shift end time:";
-				cin >> timeinput;
-				end[i] = findtime(timeinput);
-				if (end[i] == -1) {
-					cout << "Please enter a valid start time" << endl;
-				}
-				else {
-					end[i] -= starttime;
-					break;
-				}
-			}
 
+	for (int i = 0; i < shift; i++) {
+		while (true) {
+			cout << "Stand Shift start time:";
+			cin >> timeinput;
+			start[i] = findtime(timeinput);
+			if (start[i] == -1) {
+				cout << "Please enter a valid start time" << endl;
+			}
+			else {
+				start[i] -= starttime;
+				break;
+			}
 		}
-	
+		while (true) {
+			cout << "Stand Shift end time:";
+			cin >> timeinput;
+			end[i] = findtime(timeinput);
+			if (end[i] == -1) {
+				cout << "Please enter a valid start time" << endl;
+			}
+			else {
+				end[i] -= starttime;
+				break;
+			}
+		}
 
+	}
 
 	return;
 }
@@ -256,9 +254,9 @@ void StandShifts(Stands S[], int count, int start[], int end[]) {
 
 	for (int i = 0; i < count; i++) {
 		cout << "Input the shift number for the stand " << S[i].name << ":";
-		
+
 		cin >> shift;
-		
+
 
 		S[i].startime = start[shift - 1];
 		S[i].endtime = end[shift - 1];
@@ -275,22 +273,22 @@ void StandShifts(Stands S[], int count, int start[], int end[]) {
 
 void Print(int LG_count, int time, Lifeguard L[]) {
 	for (int i = 0; i < time; i++) {
-		cout << setw(4) << left << times[starttime + i];
+		cout << setw(7) << left << times[starttime + i];
 	}
 	cout << endl;
 
 	for (int y = 0; y < LG_count; y++) {
-		for(int x = 0; x < time; x++){
+		for (int x = 0; x < time; x++) {
 			if (chart[x][y] != "NULL")
-				cout <<  setw(4) << left << chart[x][y];
+				cout << setw(7) << left << chart[x][y];
 			else
-				cout << setw(4) << "-";
+				cout << setw(7) << "-";
 		}
 		cout << "StandCount:" << L[y].standcounter << endl;
 	}
 
 
-	
+
 }
 
 
@@ -305,20 +303,24 @@ bool checkStandCount(Lifeguard L[], int count) {
 }
 
 void Breaks(Lifeguard L[], int count, int intervals) {
-	cout << "Break Function Called" << endl;
+
 	int Consecutive_down_counter = 0;
 	for (int y = 0; y < count; y++) {
+
 		for (int x = 0; x < intervals; x++) {
-			if (chart[x][y] == "NULL" && L[x].starttime <= x && L[x].endtime > x && L[x].break_starttime <= x && L[x].break_endtime > x) {
-				Consecutive_down_counter++;
+			if (chart[x][y] == "NULL" && L[y].starttime <= x && L[y].endtime > x) {
+				if (L[y].break_starttime <= x && L[y].break_endtime > x) {
+					Consecutive_down_counter++;
+				}
 			}
 			else {
 				Consecutive_down_counter = 0;
 			}
 
-			if(Consecutive_down_counter == 2){
+			if (Consecutive_down_counter == 2 && x != 0) {
 				chart[x][y] = "B";
 				chart[x - 1][y] = "B";
+				Consecutive_down_counter = 0;
 				break;
 			}
 
@@ -337,7 +339,7 @@ void Disperse(Lifeguard L[], int count, int intervals) { //function that evenely
 	int maxindex = 0;
 	int start = -1;
 	int end = -1;
-	
+
 
 	while (checkStandCount(L, count) == false && noswap_counter != intervals && loopcounter != 1000) {
 		loopcounter++;
@@ -361,7 +363,7 @@ void Disperse(Lifeguard L[], int count, int intervals) { //function that evenely
 
 
 			if (current_interval == 0) { //if they are at beginning of chart you do not need to check if they are previosly down
-				if (L[i].standcounter <= L[minindex].standcounter && chart[current_interval][i] == "NULL" && L[i].disperse_viable == true){
+				if (L[i].standcounter <= L[minindex].standcounter && chart[current_interval][i] == "NULL" && L[i].disperse_viable == true) {
 					minindex = i;
 				}
 				if (L[i].standcounter >= L[maxindex].standcounter && chart[current_interval][i] != "NULL" && L[i].disperse_viable == true) {
@@ -432,11 +434,11 @@ int main() {
 	int intervals = 0;
 	int random_num = 0;
 	Lifeguard Guardarray[100];
-	Stands StandArray[100];
-	int shiftstart[50];
-	int shiftend[50];
-	int standstart[50];
-	int standend[50];
+	Stands StandArray[50];
+	int shiftstart = 0;
+	int shiftend = 0;
+	int standstart[5];
+	int standend[5];
 	string timeinput = "NULL";
 	bool valid_inputed = false;
 
@@ -458,7 +460,7 @@ int main() {
 			cout << "Please enter a valid starting and closing time that follows the format and make sure the closing time is greater than the opening time" << endl;
 	}
 
-	
+
 
 	intervals = endtime - starttime;
 
@@ -471,24 +473,24 @@ int main() {
 		}
 	}
 
-	
-	
+
+
 
 
 	StandInput(StandArray, standCount);
 
 
 
-	
-	
+
+
 	LifeguardCount = shiftInput(shiftstart, shiftend, Guardarray);
-	
+
 	standShiftInput(standstart, standend);
 
 	StandShifts(StandArray, standCount, standstart, standend);
 
 
-	
+
 
 
 	int index = -1;
@@ -509,12 +511,12 @@ int main() {
 			attemptCount = 0;
 			while (Lifeguard_selected == false) { //choose a random number and check if that random Lifeguard is down and is clocked in
 				random_num = rand() % LifeguardCount;
-				
+
 				if (Guardarray[random_num].down == true && Guardarray[random_num].starttime <= x && Guardarray[random_num].endtime > x)
 					Lifeguard_selected = true;
 				else
 					attemptCount++;
-					
+
 				if (attemptCount > 300) {
 					index = SearchChart(x - 1, StandArray[remainingStands - 1].name, LifeguardCount);
 					chart[x][index] = StandArray[remainingStands - 1].name;
@@ -571,21 +573,19 @@ int main() {
 			average += Guardarray[i].standcounter;
 			disperse_viable_counter++;
 		}
-		
+
 	}
 	average = average / disperse_viable_counter;
-	
+
 
 
 
 	Disperse(Guardarray, LifeguardCount, intervals);
-
-
 	Breaks(Guardarray, LifeguardCount, intervals);
-	
+
 	Print(LifeguardCount, intervals, Guardarray);
 	//outputfile.close();
 
-	while(true){}
+	while (true) {}
 	return 0;
 }
